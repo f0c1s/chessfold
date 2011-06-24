@@ -1,0 +1,6 @@
+Erlang Chess Project Glossary
+=============================
+
+Author: François Cardinaux
+
+

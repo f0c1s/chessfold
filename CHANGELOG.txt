@@ -1,0 +1,6 @@
+Erlang Chess Project Change Log
+===============================
+
+Author: François Cardinaux
+
+2011.06.23      v0.1    Project creation
