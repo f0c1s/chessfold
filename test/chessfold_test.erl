@@ -28,7 +28,7 @@
                     io:format("*** NYI ~p ~p ~p~n", [?MODULE, ?LINE, X])
                  end)).
                  
--define(PERFT_DEPTH, 2). % Depth 4 OK
+-define(PERFT_DEPTH, 4). % Depth 4 OK
 -define(PERFT_SUITE, "../test_data/perftsuite.txt").
 -define(DO_NON_EVOLUTIVE_TESTS, false).
 -define(DO_ISOLATION_TESTS, false).
@@ -1803,20 +1803,26 @@ perft_file_test_() ->
         Lines = read_file_lines(?PERFT_SUITE),
         
         Tests = perft_lines_to_tests(Lines, []),
-    
-        perft_acc(lists:reverse(Tests), ?PERFT_DEPTH),
-        io:format("~nPerft file test OK.", [])
+        
+        RevTest = lists:reverse(Tests),
+        
+        ?debugTime(io_lib:format("Overall duration with depth ~b", [?PERFT_DEPTH]), perft_acc(RevTest, ?PERFT_DEPTH))
     end
     ]}.
     
 perft_lines_to_tests(   [], Accum) -> Accum;
 perft_lines_to_tests(Lines, Accum) -> 
     [Line | RemainingLines] = Lines,
-    % io:format("~nLine: ~ts", [Line]),
-    [Start | IterationStrings] = string:tokens(Line, ";"),
-    IterationValues = perft_iteration_strings_to_values(IterationStrings, []),
-    Test = {Start, lists:reverse(IterationValues)}, 
-    perft_lines_to_tests(RemainingLines, [Test | Accum]).
+    case lists:nth(1, Line) of
+        $% -> 
+            ?debugMsg(io_lib:format("Line skipped: ~s", [Line])),
+            perft_lines_to_tests(RemainingLines, Accum); % Line skipped because commented out
+        _ ->
+            [Start | IterationStrings] = string:tokens(Line, ";"),
+            IterationValues = perft_iteration_strings_to_values(IterationStrings, []),
+            Test = {Start, lists:reverse(IterationValues)}, 
+            perft_lines_to_tests(RemainingLines, [Test | Accum])
+    end.
     
 perft_iteration_strings_to_values(              [], Accum) -> Accum;
 perft_iteration_strings_to_values(IterationStrings, Accum) ->
@@ -2094,6 +2100,11 @@ perft_execute(Test, Depth) ->
     
     {Start, Stats} = Test,
     
+    ?debugMsg(io_lib:format("Position: ~ts", [Start])),
+    
+    ?debugTime("Duration", perft_test_position(Start, Stats, Depth)).
+    
+perft_test_position(Start, Stats, Depth) ->    
     % Total dictionary with initial values = 0
     InitialTotalDict = total_dict_fill(1, Depth, orddict:new()),
     
