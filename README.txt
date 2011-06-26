@@ -15,6 +15,15 @@ The subfolders (updated on 2011.06.26):
   * test:           Erlang unit tests
   * test_data:      any kind of test data
   
+Credits
+-------
+
+  * Jonatan Pettersson's blog: 
+      * http://mediocrechess.blogspot.com/
+      * http://mediocrechess.blogspot.com/2006/12/guide-move-generation.html
+      * http://mediocrechess.blogspot.com/2006/12/0x88-representation.html
+      * http://mediocrechess.blogspot.com/2006/12/guide-attacked-squares.html
+
 Conventions
 -----------
 
