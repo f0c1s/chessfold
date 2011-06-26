@@ -1,4 +1,4 @@
-# Make file for Erlang code
+# Make file for the Erlang Chess Move Generator
 # Author: Francois Cardinaux
 # Date: 2011.06.24
 # 

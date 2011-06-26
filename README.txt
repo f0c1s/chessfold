@@ -8,10 +8,11 @@ Overview of the current folder:
   * It contains all files that are necessary to this project
   * There is no symlink of any sort to external resources
 
-The subfolders (updated on 2011.06.23): 
-  * _work:          any kind of unversionned work file
+The subfolders (updated on 2011.06.26): 
+  * beams:          the beam files
   * doc:            documentation
-  * erl:            Erlang part of the project, versionned
+  * erl:            Erlang part of the project
+  * test:           Erlang unit tests
   * test_data:      any kind of test data
   
 Conventions

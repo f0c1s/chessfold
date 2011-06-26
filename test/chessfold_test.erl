@@ -1,11 +1,6 @@
 %% @doc Tests of the Chess Move Generator
 %% @end
 %%
-%% To compile: 
-%%      erlc -DTEST chessfold_test.erl
-%% To test: 
-%%      erl -run chessfold_test test -run init stop -noshell
-%%
 %% @author François Cardinaux, CH 1207 Genève
 %% @copyright 2011 François Cardinaux
 
@@ -23,12 +18,7 @@
     
 -include_lib("eunit/include/eunit.hrl").
 
-% Source: Programming Erlang, p 424
--define(NYI(X), (begin
-                    io:format("*** NYI ~p ~p ~p~n", [?MODULE, ?LINE, X])
-                 end)).
-                 
--define(PERFT_DEPTH, 4). % Depth 4 OK
+-define(PERFT_DEPTH, 2). % Depth 4 OK
 -define(PERFT_SUITE, "../test_data/perftsuite.txt").
 -define(DO_NON_EVOLUTIVE_TESTS, false).
 -define(DO_ISOLATION_TESTS, false).
@@ -258,7 +248,6 @@ string_to_position_test_acc([]) -> true;
 string_to_position_test_acc(Positions) ->
     [Test | Remaining] = Positions,
     Position = string_to_position(Test),
-    ?NYI(position_to_string(Position)),
     ?assert(position_to_string(Position) =:= Test),
     string_to_position_test_acc(Remaining).
     

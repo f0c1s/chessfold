@@ -8,7 +8,6 @@
 
 -module(chessfold).
     
-% API
 -export([
     player_color/1, 
     opponent_color/1,
@@ -44,39 +43,8 @@
 -define(WIN_THRESHOLD, 10).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% MACROS AND CONSTANTS
+% CONSTANTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Source: Programming Erlang, p 424
--define(NYI(X), (begin
-                    io:format("*** NYI ~p ~p ~p~n", [?MODULE, ?LINE, X])
-                 end)).
-                 
-% Noticeable values in 0x88 representation: 
--define(ROW_SPAN,             16).
--define(MOVE_UP,              16).
--define(MOVE_UP_LEFT,         15).
--define(MOVE_UP_RIGHT,        17).
--define(MOVE_UP_2,            32).
--define(MOVE_DOWN,           -16).
--define(MOVE_DOWN_LEFT,      -17).
--define(MOVE_DOWN_RIGHT,     -15).
--define(MOVE_DOWN_2,         -32).
--define(BOTTOM_LEFT_CORNER,    0).
--define(BOTTOM_RIGHT_CORNER,   7).
--define(TOP_LEFT_CORNER,     112).
--define(TOP_RIGHT_CORNER,    119).
-                 
--define(CASTLING_ALL,         15).
--define(CASTLING_WHITE_KING,   8).
--define(CASTLING_WHITE_QUEEN,  4).
--define(CASTLING_BLACK_KING,   2).
--define(CASTLING_BLACK_QUEEN,  1).
-
-% Positions of the elements inside the ntc_chess_piece record
--define(PIECE_RECORD_COLOR,  2).
--define(PIECE_RECORD_TYPE,   3).
--define(PIECE_RECORD_SQUARE, 4).
 
 % Attack- and delta-array and constants (source: Jonatan Pettersson (mediocrechess@gmail.com))
 -define(ATTACK_NONE,    0). % Deltas that no piece can move
@@ -122,17 +90,17 @@
               16,   0,   0,   0,   0,   0,   0,  17,   0,   0,   0,   0,   0,   0,   0,   0,   0]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% API functions
+%% Public functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% -----------------------------------------------------------------------------
-%% @doc Get the identifier of the current player, i.e. the player that will play 
+%% @doc Get the color of the current player, i.e. the player that will play 
 %% the move FROM the current position
-%% @spec player_color(tuple()) -> atom()
+%% @spec player_color(tuple()) -> chess_piece_color()
 player_color(#ntc_chess_position{turn = Turn}) ->
     Turn;
 
-%% @spec player_color(list()) -> atom()
+%% @spec player_color(string()) -> chess_piece_color()
 player_color(PositionString) ->
     Position = string_to_position(PositionString),
     player_color(Position).
@@ -142,7 +110,7 @@ player_color(PositionString) ->
 %% In case there are more two colors in the game, the returned color must be the one
 %% against which the current player can win. In other words, it is the previous player's
 %% color, except that a color must be returned at initial position as well. 
-%% @spec opponent_color(term()) -> atom()
+%% @spec opponent_color(term()) -> chess_piece_color()
 opponent_color(PositionTupleOrString) ->
     case player_color(PositionTupleOrString) of
         white -> black;
@@ -151,29 +119,31 @@ opponent_color(PositionTupleOrString) ->
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the list of pieces of the position
-%% @spec pieces(term()) -> atom()
+%% @spec pieces(#ntc_chess_position{}) -> list(#ntc_chess_piece{})
 pieces(#ntc_chess_position{pieces = Pieces}) ->
     Pieces;
+    
+%% @spec pieces(string()) -> list(#ntc_chess_piece{})
 pieces(PositionString) ->
     pieces(string_to_position(PositionString)).
     
 %% -----------------------------------------------------------------------------
 %% @doc Is the king attacked in the position
-%% @spec is_king_attacked(term()) -> atom()
+%% @spec is_king_attacked(#ntc_chess_position{}) -> boolean()
 is_king_attacked(#ntc_chess_position{pieces = Pieces, turn = PlayerColor} = Position) ->
     is_square_in_attack(
         Pieces, 
         opponent_color(Position), 
         king_square(Pieces, PlayerColor));
         
+%% @spec is_king_attacked(string()) -> boolean()
 is_king_attacked(PositionString) ->
     Position = string_to_position(PositionString),
     is_king_attacked(Position).
     
-    
 %% -----------------------------------------------------------------------------
 %% @doc Transform a string into a position Tuple
-%% @spec string_to_position(string()) -> ntc_chess_position()
+%% @spec string_to_position(string()) -> #ntc_chess_position{}
 string_to_position(String) ->
 
     try
@@ -298,7 +268,7 @@ string_to_position(String) ->
 %% -----------------------------------------------------------------------------
 %% @doc Transform a position Tuple into string. 
 %% Returns the Forsyth-Edwards representation of the position.
-%% @spec position_to_string(ntc_chess_position()) -> string()
+%% @spec position_to_string(#ntc_chess_position{}) -> string()
 position_to_string(#ntc_chess_position{
         halfMoveClock     = HalfMoveClock, 
         moveNumber        = MoveNumber} = Position) ->
@@ -308,7 +278,7 @@ position_to_string(#ntc_chess_position{
 %% -----------------------------------------------------------------------------
 %% @doc Transform a position Tuple into string. 
 %% The returned string doesn't have any counter information (move count and half-move clock).
-%% @spec position_to_string_without_counters(ntc_chess_position()) -> string()
+%% @spec position_to_string_without_counters(#ntc_chess_position{}) -> string()
 position_to_string_without_counters(
     #ntc_chess_position{
         pieces            = Pieces, 
@@ -391,10 +361,12 @@ position_to_string_without_counters(
         
 %% -----------------------------------------------------------------------------
 %% @doc Get all possible moves from a specific position
-%% @spec all_possible_moves(tuple()) -> list()
+%% @spec all_possible_moves(#ntc_chess_position{}) -> list(#ntc_chess_move{})
 all_possible_moves(Position) when is_record(Position, ntc_chess_position) ->
     PseudoLegalMoves = all_pseudo_legal_moves(Position),
     eliminate_illegal_moves(PseudoLegalMoves);
+    
+%% @spec all_possible_moves(string()) -> list(#ntc_chess_move{})
 all_possible_moves(PositionString) ->
     all_possible_moves(string_to_position(PositionString)).
     
@@ -409,10 +381,12 @@ all_possible_moves(PositionString) ->
         
 %% -----------------------------------------------------------------------------
 %% @doc Get all possible moves from a specific position and a specific start square
-%% @spec all_possible_moves(tuple()) -> list()
+%% @spec all_possible_moves_from(#ntc_chess_position{}, #ntc_chess_piece{}) -> list(#ntc_chess_move{})
 all_possible_moves_from(Position, StartPiece) when is_record(StartPiece, ntc_chess_piece) ->
     PseudoLegalMoves = accumulate_pseudo_legal_moves_of_piece(Position, StartPiece, []),
     eliminate_illegal_moves(PseudoLegalMoves);
+    
+%% @spec all_possible_moves_from(#ntc_chess_position{}, integer()) -> list(#ntc_chess_move{})
 all_possible_moves_from(Position, StartSquare) ->
     StartPiece = get_piece_on_square(Position#ntc_chess_position.pieces, StartSquare),
     all_possible_moves_from(Position, StartPiece).
@@ -460,42 +434,42 @@ all_possible_moves_from(Position, StartSquare) ->
         
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec position_after_move(tuple()) -> list()
+%% @spec position_after_move(#ntc_chess_move{}) -> #ntc_chess_position{}
 position_after_move(#ntc_chess_move{newPosition = NewPosition}) ->
     NewPosition.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec move_origin(tuple()) -> list()
+%% @spec move_origin(#ntc_chess_move{}) -> #ntc_chess_piece{}
 move_origin(#ntc_chess_move{from = Origin}) ->
     Origin.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec move_target(tuple()) -> list()
+%% @spec move_target(#ntc_chess_move{}) -> #ntc_chess_piece{}
 move_target(#ntc_chess_move{to = Target}) ->
     Target.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the color of the piece
-%% @spec piece_color(tuple()) -> atom()
+%% @spec piece_color(#ntc_chess_piece{}) -> chess_piece_color()
 piece_color(#ntc_chess_piece{color = Color}) ->
     Color.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the type of the piece
-%% @spec piece_type(tuple()) -> atom()
+%% @spec piece_type(#ntc_chess_piece{}) -> chess_piece_type()
 piece_type(#ntc_chess_piece{type = Type}) ->
     Type.
 
 %% -----------------------------------------------------------------------------
 %% @doc Get the square of the piece
-%% @spec piece_square(tuple()) -> atom()
+%% @spec piece_square(#ntc_chess_piece{}) -> chess_piece_square()
 piece_square(#ntc_chess_piece{square = Square}) ->
     Square.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Functions that are public in test mode and private in normal mode
+%% Functions that are public in test mode but private in normal mode
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% -----------------------------------------------------------------------------
@@ -524,7 +498,7 @@ allowed_castling_value_to_string(AllowedCastling) ->
     end.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Private functions related to squares
+%% Private functions that are related to squares
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% -----------------------------------------------------------------------------
@@ -629,8 +603,7 @@ king_square(Pieces, KingColor) ->
                     
     case lists:filter(IsPlayerKing, Pieces) of
         [PlayerKing] -> PlayerKing#ntc_chess_piece.square;
-        _            -> ?NYI(Pieces), 
-                        false
+        _            -> false
     end.
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -917,7 +890,7 @@ insert_pseudo_legal_move(Position, From, To, Taken, Castling, NewEnPassant, fals
     
 %% -----------------------------------------------------------------------------
 %% @doc Execute the specified move and return the new ntc_chess_position tuple
-%% @spec get_new_position(tuple(), tuple(), tuple(), tuple() or false, atom() or boolean()) -> tuple()
+%% @spec get_new_position(#ntc_chess_position{}, #ntc_chess_piece{}, #ntc_chess_piece{}, false | #ntc_chess_piece{}, castling(), 'false' | chess_piece_square()) -> #ntc_chess_position{}
 get_new_position(   #ntc_chess_position{
                         pieces                  = Pieces, 
                         turn                    = Turn, 

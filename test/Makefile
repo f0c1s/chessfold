@@ -1,3 +1,9 @@
+# Make file for the Erlang Chess Move Generator
+# Author: Francois Cardinaux
+# Date: 2011.06.24
+#
+# Use the Makefile in the parent directory instead.
+
 # leave these lines alone
 .SUFFIXES: .erl .beam .yrl
 
