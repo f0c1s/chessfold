@@ -24,6 +24,11 @@ Credits
       * http://mediocrechess.blogspot.com/2006/12/0x88-representation.html
       * http://mediocrechess.blogspot.com/2006/12/guide-attacked-squares.html
 
+License
+-------
+
+This software is released under the GNU General Public License (GPL) version 3.
+
 Conventions
 -----------
 

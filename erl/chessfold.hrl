@@ -1,8 +1,10 @@
 %% @doc Chess Move Generator: Header file
 %% @end
 %% 
-%% Author François Cardinaux, CH 1207 Genève
-%% Copyright 2011 François Cardinaux
+%% This file is released under the GNU General Public License (GPL) version 3.
+%% 
+%% @author François Cardinaux, CH 1207 Genève
+%% @copyright 2011 François Cardinaux
 
 % Noticeable values in 0x88 representation: 
 -define(ROW_SPAN,             16).

@@ -1,6 +1,8 @@
 %% @doc Tests of the Chess Move Generator
 %% @end
 %%
+%% This module is released under the GNU General Public License (GPL) version 3.
+%% 
 %% @author François Cardinaux, CH 1207 Genève
 %% @copyright 2011 François Cardinaux
 
