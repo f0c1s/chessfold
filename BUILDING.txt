@@ -92,13 +92,8 @@ How to set up the test environment (Ubuntu 11.04)
         make
         make install
         
-    IMPORTANT / as of 2011.06.16, after this intallation, the *old* erlang is still
+    IMPORTANT / as of 2011.06.16, after this intallation, the *old* erlang (R13B04) is still
     in folder /usr/bin/, and the *new* erlang is in /usr/local/bin/
     
-    Please note also what didn't work in my code with the *old* erlang: 
-      * some options of ets:new/2
-      * Accessing a property in a subrecord without using parentheses: 
-          * R14B03 only:   MyValue#my_type.my_property#my_subtype.my_subproperty
-          * Both versions: (MyValue#my_type.my_property)#my_subtype.my_subproperty
           
 
