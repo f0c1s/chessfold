@@ -27,11 +27,11 @@ For the algorithm:
       * http://mediocrechess.blogspot.com/2006/12/guide-attacked-squares.html
 
 For debugging and tests: 
+  * Roce: http://www.rocechess.ch/rocee.html
+  * Perft suite: http://hem.passagen.se/maragor/perftsuite.epd, which can be found inside Roce
   * http://mediocrechess.blogspot.com/2007/01/guide-perft-scores.html
   * http://www.albert.nu/programs/sharper/perft.asp
   * https://chessprogramming.wikispaces.com/Perft+Results
-  * http://hem.passagen.se/maragor/perftsuite.epd
-  * http://www.rocechess.ch/rocee.html
   
 License
 -------
