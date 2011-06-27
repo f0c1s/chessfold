@@ -96,11 +96,11 @@
 %% -----------------------------------------------------------------------------
 %% @doc Get the color of the current player, i.e. the player that will play 
 %% the move FROM the current position
-%% @spec player_color(tuple()) -> chess_piece_color()
-player_color(#ntc_chess_position{turn = Turn}) ->
+%% @spec player_color(tuple()) -> chessfold_piece_color()
+player_color(#chessfold_position{turn = Turn}) ->
     Turn;
 
-%% @spec player_color(string()) -> chess_piece_color()
+%% @spec player_color(string()) -> chessfold_piece_color()
 player_color(PositionString) ->
     Position = string_to_position(PositionString),
     player_color(Position).
@@ -110,7 +110,7 @@ player_color(PositionString) ->
 %% In case there are more two colors in the game, the returned color must be the one
 %% against which the current player can win. In other words, it is the previous player's
 %% color, except that a color must be returned at initial position as well. 
-%% @spec opponent_color(term()) -> chess_piece_color()
+%% @spec opponent_color(term()) -> chessfold_piece_color()
 opponent_color(PositionTupleOrString) ->
     case player_color(PositionTupleOrString) of
         white -> black;
@@ -119,18 +119,18 @@ opponent_color(PositionTupleOrString) ->
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the list of pieces of the position
-%% @spec pieces(#ntc_chess_position{}) -> list(#ntc_chess_piece{})
-pieces(#ntc_chess_position{pieces = Pieces}) ->
+%% @spec pieces(#chessfold_position{}) -> list(#chessfold_piece{})
+pieces(#chessfold_position{pieces = Pieces}) ->
     Pieces;
     
-%% @spec pieces(string()) -> list(#ntc_chess_piece{})
+%% @spec pieces(string()) -> list(#chessfold_piece{})
 pieces(PositionString) ->
     pieces(string_to_position(PositionString)).
     
 %% -----------------------------------------------------------------------------
 %% @doc Is the king attacked in the position
-%% @spec is_king_attacked(#ntc_chess_position{}) -> boolean()
-is_king_attacked(#ntc_chess_position{pieces = Pieces, turn = PlayerColor} = Position) ->
+%% @spec is_king_attacked(#chessfold_position{}) -> boolean()
+is_king_attacked(#chessfold_position{pieces = Pieces, turn = PlayerColor} = Position) ->
     is_square_in_attack(
         Pieces, 
         opponent_color(Position), 
@@ -143,7 +143,7 @@ is_king_attacked(PositionString) ->
     
 %% -----------------------------------------------------------------------------
 %% @doc Transform a string into a position Tuple
-%% @spec string_to_position(string()) -> #ntc_chess_position{}
+%% @spec string_to_position(string()) -> #chessfold_position{}
 string_to_position(String) ->
 
     try
@@ -166,7 +166,7 @@ string_to_position(String) ->
                             end,
     
         % Return the position
-        #ntc_chess_position{
+        #chessfold_position{
             pieces                  = Pieces, 
             turn                    = Turn, 
             allowedCastling         = AllowedCastling, 
@@ -225,24 +225,24 @@ string_to_position(String) ->
                                         end, 
         NewPieces = case  NewPiece of
                         empty_square    -> Pieces;
-                        _               -> [NewPiece#ntc_chess_piece{square = CurrentSquareId}|Pieces]
+                        _               -> [NewPiece#chessfold_piece{square = CurrentSquareId}|Pieces]
                     end, 
         square_chars_to_pieces(Remaining, NewPieces, CurrentSquareId + SquareIncrement, LastSquareIdOfRow).
 
     charcode_to_piece(CharCode) ->
         case CharCode of
-            $r -> #ntc_chess_piece{color = black, type = rook  };
-            $n -> #ntc_chess_piece{color = black, type = knight};
-            $b -> #ntc_chess_piece{color = black, type = bishop};
-            $q -> #ntc_chess_piece{color = black, type = queen };
-            $k -> #ntc_chess_piece{color = black, type = king  };
-            $p -> #ntc_chess_piece{color = black, type = pawn  };
-            $R -> #ntc_chess_piece{color = white, type = rook  };
-            $N -> #ntc_chess_piece{color = white, type = knight};
-            $B -> #ntc_chess_piece{color = white, type = bishop};
-            $Q -> #ntc_chess_piece{color = white, type = queen };
-            $K -> #ntc_chess_piece{color = white, type = king  };
-            $P -> #ntc_chess_piece{color = white, type = pawn  };
+            $r -> #chessfold_piece{color = black, type = rook  };
+            $n -> #chessfold_piece{color = black, type = knight};
+            $b -> #chessfold_piece{color = black, type = bishop};
+            $q -> #chessfold_piece{color = black, type = queen };
+            $k -> #chessfold_piece{color = black, type = king  };
+            $p -> #chessfold_piece{color = black, type = pawn  };
+            $R -> #chessfold_piece{color = white, type = rook  };
+            $N -> #chessfold_piece{color = white, type = knight};
+            $B -> #chessfold_piece{color = white, type = bishop};
+            $Q -> #chessfold_piece{color = white, type = queen };
+            $K -> #chessfold_piece{color = white, type = king  };
+            $P -> #chessfold_piece{color = white, type = pawn  };
             _ -> false
         end.
     
@@ -268,8 +268,8 @@ string_to_position(String) ->
 %% -----------------------------------------------------------------------------
 %% @doc Transform a position Tuple into string. 
 %% Returns the Forsyth-Edwards representation of the position.
-%% @spec position_to_string(#ntc_chess_position{}) -> string()
-position_to_string(#ntc_chess_position{
+%% @spec position_to_string(#chessfold_position{}) -> string()
+position_to_string(#chessfold_position{
         halfMoveClock     = HalfMoveClock, 
         moveNumber        = MoveNumber} = Position) ->
     
@@ -278,9 +278,9 @@ position_to_string(#ntc_chess_position{
 %% -----------------------------------------------------------------------------
 %% @doc Transform a position Tuple into string. 
 %% The returned string doesn't have any counter information (move count and half-move clock).
-%% @spec position_to_string_without_counters(#ntc_chess_position{}) -> string()
+%% @spec position_to_string_without_counters(#chessfold_position{}) -> string()
 position_to_string_without_counters(
-    #ntc_chess_position{
+    #chessfold_position{
         pieces            = Pieces, 
         turn              = Turn, 
         allowedCastling   = AllowedCastling, 
@@ -338,7 +338,7 @@ position_to_string_without_counters(
         
         chess_grid_to_row_chars(Pieces, RowId, ColId - 1, NewAccumulator, NewCounter).
         
-    piece_to_char(#ntc_chess_piece{color = Color, type = Type}) ->
+    piece_to_char(#chessfold_piece{color = Color, type = Type}) ->
         case {Color, Type} of
             {black, rook}    -> "r";
             {black, knight}  -> "n";
@@ -361,18 +361,18 @@ position_to_string_without_counters(
         
 %% -----------------------------------------------------------------------------
 %% @doc Get all possible moves from a specific position
-%% @spec all_possible_moves(#ntc_chess_position{}) -> list(#ntc_chess_move{})
-all_possible_moves(Position) when is_record(Position, ntc_chess_position) ->
+%% @spec all_possible_moves(#chessfold_position{}) -> list(#chessfold_move{})
+all_possible_moves(Position) when is_record(Position, chessfold_position) ->
     PseudoLegalMoves = all_pseudo_legal_moves(Position),
     eliminate_illegal_moves(PseudoLegalMoves);
     
-%% @spec all_possible_moves(string()) -> list(#ntc_chess_move{})
+%% @spec all_possible_moves(string()) -> list(#chessfold_move{})
 all_possible_moves(PositionString) ->
     all_possible_moves(string_to_position(PositionString)).
     
     
     all_pseudo_legal_moves(Position) ->
-        PlayerPieces = pieces_of_color(Position#ntc_chess_position.pieces, Position#ntc_chess_position.turn),
+        PlayerPieces = pieces_of_color(Position#chessfold_position.pieces, Position#chessfold_position.turn),
     
         AccumulatePseudoLegalMovesOfPiece = fun(PlayerPiece, MoveList) -> 
                                                 accumulate_pseudo_legal_moves_of_piece(Position, PlayerPiece, MoveList)
@@ -381,14 +381,14 @@ all_possible_moves(PositionString) ->
         
 %% -----------------------------------------------------------------------------
 %% @doc Get all possible moves from a specific position and a specific start square
-%% @spec all_possible_moves_from(#ntc_chess_position{}, #ntc_chess_piece{}) -> list(#ntc_chess_move{})
-all_possible_moves_from(Position, StartPiece) when is_record(StartPiece, ntc_chess_piece) ->
+%% @spec all_possible_moves_from(#chessfold_position{}, #chessfold_piece{}) -> list(#chessfold_move{})
+all_possible_moves_from(Position, StartPiece) when is_record(StartPiece, chessfold_piece) ->
     PseudoLegalMoves = accumulate_pseudo_legal_moves_of_piece(Position, StartPiece, []),
     eliminate_illegal_moves(PseudoLegalMoves);
     
-%% @spec all_possible_moves_from(#ntc_chess_position{}, integer()) -> list(#ntc_chess_move{})
+%% @spec all_possible_moves_from(#chessfold_position{}, integer()) -> list(#chessfold_move{})
 all_possible_moves_from(Position, StartSquare) ->
-    StartPiece = get_piece_on_square(Position#ntc_chess_position.pieces, StartSquare),
+    StartPiece = get_piece_on_square(Position#chessfold_position.pieces, StartSquare),
     all_possible_moves_from(Position, StartPiece).
         
     eliminate_illegal_moves(Moves) ->
@@ -399,9 +399,9 @@ all_possible_moves_from(Position, StartSquare) ->
         [Move|RemainingMoves] = Moves,
         
         % Determine if there is an attack *after* the move
-        Pieces              = (Move#ntc_chess_move.newPosition)#ntc_chess_position.pieces,
-        PlayerColor         = (Move#ntc_chess_move.from)#ntc_chess_piece.color,
-        OpponentColor       = (Move#ntc_chess_move.newPosition)#ntc_chess_position.turn,
+        Pieces              = (Move#chessfold_move.newPosition)#chessfold_position.pieces,
+        PlayerColor         = (Move#chessfold_move.from)#chessfold_piece.color,
+        OpponentColor       = (Move#chessfold_move.newPosition)#chessfold_position.turn,
         
         % The king of the player who has *just played*, i.e. not the same king as if we called is_king_attacked on the resulting position
         KingSquare = king_square(Pieces, PlayerColor),
@@ -411,8 +411,8 @@ all_possible_moves_from(Position, StartSquare) ->
                                     KingSquare),
                                     
         % In case of castling, verify the start and median square as well
-        StartSquare = (Move#ntc_chess_move.from)#ntc_chess_piece.square,
-        Illegal = case {PlayerKingAttacked, Move#ntc_chess_move.castling} of
+        StartSquare = (Move#chessfold_move.from)#chessfold_piece.square,
+        Illegal = case {PlayerKingAttacked, Move#chessfold_move.castling} of
             {true,      _} -> true;
             {false, false} -> false;
             {false,  king} -> is_any_square_in_attack(Pieces, OpponentColor, [StartSquare, StartSquare + 1]);
@@ -434,38 +434,38 @@ all_possible_moves_from(Position, StartSquare) ->
         
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec position_after_move(#ntc_chess_move{}) -> #ntc_chess_position{}
-position_after_move(#ntc_chess_move{newPosition = NewPosition}) ->
+%% @spec position_after_move(#chessfold_move{}) -> #chessfold_position{}
+position_after_move(#chessfold_move{newPosition = NewPosition}) ->
     NewPosition.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec move_origin(#ntc_chess_move{}) -> #ntc_chess_piece{}
-move_origin(#ntc_chess_move{from = Origin}) ->
+%% @spec move_origin(#chessfold_move{}) -> #chessfold_piece{}
+move_origin(#chessfold_move{from = Origin}) ->
     Origin.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the position after a move
-%% @spec move_target(#ntc_chess_move{}) -> #ntc_chess_piece{}
-move_target(#ntc_chess_move{to = Target}) ->
+%% @spec move_target(#chessfold_move{}) -> #chessfold_piece{}
+move_target(#chessfold_move{to = Target}) ->
     Target.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the color of the piece
-%% @spec piece_color(#ntc_chess_piece{}) -> chess_piece_color()
-piece_color(#ntc_chess_piece{color = Color}) ->
+%% @spec piece_color(#chessfold_piece{}) -> chessfold_piece_color()
+piece_color(#chessfold_piece{color = Color}) ->
     Color.
     
 %% -----------------------------------------------------------------------------
 %% @doc Get the type of the piece
-%% @spec piece_type(#ntc_chess_piece{}) -> chess_piece_type()
-piece_type(#ntc_chess_piece{type = Type}) ->
+%% @spec piece_type(#chessfold_piece{}) -> chessfold_piece_type()
+piece_type(#chessfold_piece{type = Type}) ->
     Type.
 
 %% -----------------------------------------------------------------------------
 %% @doc Get the square of the piece
-%% @spec piece_square(#ntc_chess_piece{}) -> chess_piece_square()
-piece_square(#ntc_chess_piece{square = Square}) ->
+%% @spec piece_square(#chessfold_piece{}) -> chessfold_square()
+piece_square(#chessfold_piece{square = Square}) ->
     Square.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -477,7 +477,7 @@ piece_square(#ntc_chess_piece{square = Square}) ->
 square_reference(RowId, ColId) ->
     ?ROW_SPAN * RowId + ColId. 
     
-square_to_string(#ntc_chess_piece{square = SquareNumber}) ->
+square_to_string(#chessfold_piece{square = SquareNumber}) ->
     square_to_string(SquareNumber);
 square_to_string(SquareNumber) when SquareNumber > ?TOP_RIGHT_CORNER    -> throw({invalid_square_number, SquareNumber}); 
 square_to_string(SquareNumber) when SquareNumber < ?BOTTOM_LEFT_CORNER  -> throw({invalid_square_number, SquareNumber});
@@ -504,7 +504,7 @@ allowed_castling_value_to_string(AllowedCastling) ->
 %% -----------------------------------------------------------------------------
 %% @doc Get the piece on the square 
 %% @spec get_piece_on_square(tuple() or list(), integer()) -> atom() | false
-get_piece_on_square(#ntc_chess_position{pieces = Pieces}, SquareKey) ->
+get_piece_on_square(#chessfold_position{pieces = Pieces}, SquareKey) ->
     get_piece_on_square(Pieces, SquareKey);
     
 get_piece_on_square(Pieces, SquareKey) when is_list(Pieces) ->
@@ -513,7 +513,7 @@ get_piece_on_square(Pieces, SquareKey) when is_list(Pieces) ->
 %% -----------------------------------------------------------------------------
 %% @doc Is there a piece on the square?
 %% @spec square_has_piece(tuple() or list(), integer()) -> boolean()
-square_has_piece(#ntc_chess_position{pieces = Pieces}, Square) ->
+square_has_piece(#chessfold_position{pieces = Pieces}, Square) ->
     square_has_piece(Pieces, Square);
 
 square_has_piece(Pieces, Square) when is_list(Pieces) ->
@@ -531,14 +531,14 @@ is_square_in_attack(Pieces, AttackingPieceColor, AttackedSquare) ->
                             case IsAlreadyAnAttack of
                                 true -> true;
                                 _ ->
-                                    AttackingSquare       = Piece#ntc_chess_piece.square,
+                                    AttackingSquare       = Piece#chessfold_piece.square,
                                     AttackArrayKey        = try AttackedSquare - AttackingSquare + 129 of % Not 128 because ?ATTACK_ARRAY keys start with 1
                                                                 Value -> Value
                                                             catch
                                                                 Error:Reason -> ?NYI({AttackingSquare, AttackedSquare, Error, Reason})
                                                             end,
                                     PiecesAbleToAttack    = lists:nth(AttackArrayKey, ?ATTACK_ARRAY),
-                                    AttackingPieceType    = Piece#ntc_chess_piece.type,
+                                    AttackingPieceType    = Piece#chessfold_piece.type,
                                     IsPossibleAttack      = case {PiecesAbleToAttack, AttackingPieceColor, AttackingPieceType} of
                                                                 {?ATTACK_NONE,      _, _}      -> false;
                                                                 {?ATTACK_KQR,       _, king}   -> true; 
@@ -587,7 +587,7 @@ is_square_in_attack(Pieces, AttackingPieceColor, AttackedSquare) ->
         
     pieces_of_color(Pieces, Color) ->
         IsColor = fun(Piece) ->
-                            (Piece#ntc_chess_piece.color =:= Color)
+                            (Piece#chessfold_piece.color =:= Color)
                         end,
         lists:filter(IsColor, Pieces).
         
@@ -595,14 +595,14 @@ is_square_in_attack(Pieces, AttackingPieceColor, AttackedSquare) ->
 %% @doc Where is the king of the specified color
 king_square(Pieces, KingColor) ->
     IsPlayerKing  = fun(Piece) ->
-                        case {Piece#ntc_chess_piece.color, Piece#ntc_chess_piece.type} of
+                        case {Piece#chessfold_piece.color, Piece#chessfold_piece.type} of
                             {KingColor, king} -> true;
                             _                 -> false
                         end
                     end,
                     
     case lists:filter(IsPlayerKing, Pieces) of
-        [PlayerKing] -> PlayerKing#ntc_chess_piece.square;
+        [PlayerKing] -> PlayerKing#chessfold_piece.square;
         _            -> false
     end.
         
@@ -612,7 +612,7 @@ king_square(Pieces, KingColor) ->
 
 %% -----------------------------------------------------------------------------
 % Functions used by all_possible_moves() 
-accumulate_pseudo_legal_moves_of_piece(Position, #ntc_chess_piece{color = PieceColor, type = PieceType} = MovedPiece, MoveListAcc) ->
+accumulate_pseudo_legal_moves_of_piece(Position, #chessfold_piece{color = PieceColor, type = PieceType} = MovedPiece, MoveListAcc) ->
     
     Opponent = opponent_color(Position),
 
@@ -627,7 +627,7 @@ accumulate_pseudo_legal_moves_of_piece(Position, #ntc_chess_piece{color = PieceC
         _                  -> throw({invalid_piece_type, PieceType})
     end.
     
-accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSquare = EnPassantSquare} = Position, #ntc_chess_piece{square = Square} = MovedPiece, MoveListAcc) ->
+accumulate_pseudo_legal_pawn_moves(#chessfold_position{turn = Turn, enPassantSquare = EnPassantSquare} = Position, #chessfold_piece{square = Square} = MovedPiece, MoveListAcc) ->
 
     {RowId, ColId} = {Square div ?ROW_SPAN, Square rem ?ROW_SPAN}, 
     
@@ -659,7 +659,7 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                                                             _    -> {insert_pseudo_legal_move(
                                                                                 Position, 
                                                                                 MovedPiece, 
-                                                                                MovedPiece#ntc_chess_piece{square = NewSquare1}, 
+                                                                                MovedPiece#chessfold_piece{square = NewSquare1}, 
                                                                                 false, 
                                                                                 false, 
                                                                                 false,
@@ -678,7 +678,7 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                                         _    -> insert_pseudo_legal_move(
                                                             Position, 
                                                             MovedPiece, 
-                                                            MovedPiece#ntc_chess_piece{square = NewSquare2}, 
+                                                            MovedPiece#chessfold_piece{square = NewSquare2}, 
                                                             false, 
                                                             false, 
                                                             Square + Increment,
@@ -703,8 +703,8 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                     insert_pseudo_legal_move(
                                     Position, 
                                     MovedPiece, 
-                                    MovedPiece#ntc_chess_piece{square = LeftSquare}, 
-                                    #ntc_chess_piece{color = Opponent, type = pawn, square = square_reference(RowId, ColId - 1)}, % taken en passant
+                                    MovedPiece#chessfold_piece{square = LeftSquare}, 
+                                    #chessfold_piece{color = Opponent, type = pawn, square = square_reference(RowId, ColId - 1)}, % taken en passant
                                     false, 
                                     false, 
                                     false, 
@@ -712,13 +712,13 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                     
                 {false,          _} -> MoveListWithForward2;
                 
-                _ when LeftTakenPiece#ntc_chess_piece.color =:= Turn  -> MoveListWithForward2;
+                _ when LeftTakenPiece#chessfold_piece.color =:= Turn  -> MoveListWithForward2;
                 
                 _ -> 
                     insert_pseudo_legal_move(
                                     Position, 
                                     MovedPiece, 
-                                    MovedPiece#ntc_chess_piece{square = LeftSquare}, 
+                                    MovedPiece#chessfold_piece{square = LeftSquare}, 
                                     LeftTakenPiece, 
                                     false, 
                                     false, 
@@ -739,8 +739,8 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                     insert_pseudo_legal_move(
                                     Position, 
                                     MovedPiece, 
-                                    MovedPiece#ntc_chess_piece{square = RightSquare}, 
-                                    #ntc_chess_piece{color = Opponent, type = pawn, square = square_reference(RowId, ColId + 1)}, % taken en passant
+                                    MovedPiece#chessfold_piece{square = RightSquare}, 
+                                    #chessfold_piece{color = Opponent, type = pawn, square = square_reference(RowId, ColId + 1)}, % taken en passant
                                     false, 
                                     false, 
                                     false, 
@@ -748,13 +748,13 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
                     
                 {false,           _} -> MoveListWithLeftTaking;
                 
-                _ when RightTakenPiece#ntc_chess_piece.color =:= Turn  -> MoveListWithLeftTaking;
+                _ when RightTakenPiece#chessfold_piece.color =:= Turn  -> MoveListWithLeftTaking;
                 
                 _ -> 
                     insert_pseudo_legal_move(
                                     Position, 
                                     MovedPiece, 
-                                    MovedPiece#ntc_chess_piece{square = RightSquare}, 
+                                    MovedPiece#chessfold_piece{square = RightSquare}, 
                                     RightTakenPiece, 
                                     false, 
                                     false, 
@@ -763,15 +763,15 @@ accumulate_pseudo_legal_pawn_moves(#ntc_chess_position{turn = Turn, enPassantSqu
             end
     end.
 
-accumulate_pseudo_legal_rook_moves(#ntc_chess_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
-    Square = MovedPiece#ntc_chess_piece.square,
+accumulate_pseudo_legal_rook_moves(#chessfold_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
+    Square = MovedPiece#chessfold_piece.square,
     accumulate_moves(Position, MovedPiece, Square,  ?ROW_SPAN, Turn, true, 
     accumulate_moves(Position, MovedPiece, Square, -?ROW_SPAN, Turn, true, 
     accumulate_moves(Position, MovedPiece, Square,   1, Turn, true, 
     accumulate_moves(Position, MovedPiece, Square,  -1, Turn, true, MoveListAcc)))).
 
-accumulate_pseudo_legal_knight_moves(#ntc_chess_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
-    Square = MovedPiece#ntc_chess_piece.square,
+accumulate_pseudo_legal_knight_moves(#chessfold_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
+    Square = MovedPiece#chessfold_piece.square,
     accumulate_moves(Position, MovedPiece, Square,  14, Turn, false, % 16 - 2 (0x88 representation)
     accumulate_moves(Position, MovedPiece, Square, -14, Turn, false, 
     accumulate_moves(Position, MovedPiece, Square,  18, Turn, false, % 16 + 2 (0x88 representation)
@@ -781,8 +781,8 @@ accumulate_pseudo_legal_knight_moves(#ntc_chess_position{turn = Turn} = Position
     accumulate_moves(Position, MovedPiece, Square,  33, Turn, false, % 32 + 1 (0x88 representation)
     accumulate_moves(Position, MovedPiece, Square, -33, Turn, false, MoveListAcc)))))))).
 
-accumulate_pseudo_legal_bishop_moves(#ntc_chess_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
-    Square = MovedPiece#ntc_chess_piece.square,
+accumulate_pseudo_legal_bishop_moves(#chessfold_position{turn = Turn} = Position, MovedPiece, MoveListAcc) ->
+    Square = MovedPiece#chessfold_piece.square,
     accumulate_moves(Position, MovedPiece, Square, ?MOVE_UP_LEFT,       Turn, true, 
     accumulate_moves(Position, MovedPiece, Square, ?MOVE_DOWN_RIGHT,    Turn, true, 
     accumulate_moves(Position, MovedPiece, Square, ?MOVE_UP_RIGHT,      Turn, true, 
@@ -792,27 +792,27 @@ accumulate_pseudo_legal_queen_moves(Position, MovedPiece, MoveListAcc) ->
     accumulate_pseudo_legal_rook_moves(Position, MovedPiece,  
     accumulate_pseudo_legal_bishop_moves(Position, MovedPiece, MoveListAcc)).
     
-king_side_castling(#ntc_chess_position{turn = Turn} = Position, MovedPiece, AllowedCastling, MoveListAcc) ->
+king_side_castling(#chessfold_position{turn = Turn} = Position, MovedPiece, AllowedCastling, MoveListAcc) ->
     TurnKing  = case Turn of white -> ?CASTLING_WHITE_KING;  _ -> ?CASTLING_BLACK_KING  end, 
     case TurnKing band AllowedCastling of
         0 -> MoveListAcc;
         _ -> 
-            Square = MovedPiece#ntc_chess_piece.square,
+            Square = MovedPiece#chessfold_piece.square,
             PieceOnColumnF = get_piece_on_square(Position, Square + 1),
             PieceOnColumnG = get_piece_on_square(Position, Square + 2),
             if
                 false =/= PieceOnColumnF -> MoveListAcc; 
                 false =/= PieceOnColumnG -> MoveListAcc; 
-                true                     -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#ntc_chess_piece{square = Square + 2}, false, king, false, false, MoveListAcc)
+                true                     -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#chessfold_piece{square = Square + 2}, false, king, false, false, MoveListAcc)
             end
      end.
      
-queen_side_castling(#ntc_chess_position{turn = Turn} = Position, MovedPiece, AllowedCastling, MoveListAcc) ->
+queen_side_castling(#chessfold_position{turn = Turn} = Position, MovedPiece, AllowedCastling, MoveListAcc) ->
     TurnQueen = case Turn of white -> ?CASTLING_WHITE_QUEEN; _ -> ?CASTLING_BLACK_QUEEN end, 
      case TurnQueen band AllowedCastling of 
          0 -> MoveListAcc;
          _ -> 
-            Square = MovedPiece#ntc_chess_piece.square,
+            Square = MovedPiece#chessfold_piece.square,
             PieceOnColumnD = get_piece_on_square(Position, Square - 1),
             PieceOnColumnC = get_piece_on_square(Position, Square - 2),
             PieceOnColumnB = get_piece_on_square(Position, Square - 3),
@@ -820,17 +820,17 @@ queen_side_castling(#ntc_chess_position{turn = Turn} = Position, MovedPiece, All
                 false =/= PieceOnColumnD -> MoveListAcc; 
                 false =/= PieceOnColumnC -> MoveListAcc; 
                 false =/= PieceOnColumnB -> MoveListAcc; 
-                true                     -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#ntc_chess_piece{square = Square - 2}, false, queen, false, false, MoveListAcc)
+                true                     -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#chessfold_piece{square = Square - 2}, false, queen, false, false, MoveListAcc)
             end
      end.
 
 accumulate_pseudo_legal_king_moves(
-    #ntc_chess_position{
+    #chessfold_position{
         turn                    = Turn, 
         allowedCastling         = AllowedCastling} = Position, 
     MovedPiece, 
     MoveListAcc) ->
-    Square = MovedPiece#ntc_chess_piece.square,
+    Square = MovedPiece#chessfold_piece.square,
     NormalMoveList = 
         accumulate_moves(Position, MovedPiece, Square, ?MOVE_UP,            Turn, false, 
         accumulate_moves(Position, MovedPiece, Square, ?MOVE_DOWN,          Turn, false, 
@@ -852,13 +852,13 @@ accumulate_moves(Position, MovedPiece, CurrentSquare, Increment, Turn, Continue,
         true -> MoveListAcc;
         _    -> OccupyingPiece = get_piece_on_square(Position, NewSquare),
                 case OccupyingPiece of
-                    #ntc_chess_piece{color = Turn} -> MoveListAcc;
-                    false     -> NewMoveList = insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#ntc_chess_piece{square = NewSquare}, false, false, false, false, MoveListAcc),
+                    #chessfold_piece{color = Turn} -> MoveListAcc;
+                    false     -> NewMoveList = insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#chessfold_piece{square = NewSquare}, false, false, false, false, MoveListAcc),
                                  if 
                                     Continue -> accumulate_moves(Position, MovedPiece, NewSquare, Increment, Turn, Continue, NewMoveList);
                                     true     -> NewMoveList
                                  end;
-                    _         -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#ntc_chess_piece{square = NewSquare}, OccupyingPiece, false, false, false, MoveListAcc)
+                    _         -> insert_pseudo_legal_move(Position, MovedPiece, MovedPiece#chessfold_piece{square = NewSquare}, OccupyingPiece, false, false, false, MoveListAcc)
                 end
     end. 
     
@@ -870,16 +870,16 @@ accumulate_moves(Position, MovedPiece, CurrentSquare, Increment, Turn, Continue,
     
 % A promotion
 insert_pseudo_legal_move(Position, From, To, Taken, _Castling, _NewEnPassant, true, MoveListAcc) ->
-    insert_pseudo_legal_move(Position, From, To#ntc_chess_piece{type = queen},  Taken, false, false, false, 
-    insert_pseudo_legal_move(Position, From, To#ntc_chess_piece{type = rook},   Taken, false, false, false, 
-    insert_pseudo_legal_move(Position, From, To#ntc_chess_piece{type = bishop}, Taken, false, false, false, 
-    insert_pseudo_legal_move(Position, From, To#ntc_chess_piece{type = knight}, Taken, false, false, false, MoveListAcc))));
+    insert_pseudo_legal_move(Position, From, To#chessfold_piece{type = queen},  Taken, false, false, false, 
+    insert_pseudo_legal_move(Position, From, To#chessfold_piece{type = rook},   Taken, false, false, false, 
+    insert_pseudo_legal_move(Position, From, To#chessfold_piece{type = bishop}, Taken, false, false, false, 
+    insert_pseudo_legal_move(Position, From, To#chessfold_piece{type = knight}, Taken, false, false, false, MoveListAcc))));
 
 % Not a promotion
 insert_pseudo_legal_move(Position, From, To, Taken, Castling, NewEnPassant, false, MoveListAcc) ->
     NewPosition = get_new_position(Position, From, To, Taken, Castling, NewEnPassant), 
     
-    Move = #ntc_chess_move{
+    Move = #chessfold_move{
                 from        = From, 
                 to          = To, 
                 newPosition = NewPosition, 
@@ -889,9 +889,9 @@ insert_pseudo_legal_move(Position, From, To, Taken, Castling, NewEnPassant, fals
     [Move|MoveListAcc].
     
 %% -----------------------------------------------------------------------------
-%% @doc Execute the specified move and return the new ntc_chess_position tuple
-%% @spec get_new_position(#ntc_chess_position{}, #ntc_chess_piece{}, #ntc_chess_piece{}, false | #ntc_chess_piece{}, castling(), 'false' | chess_piece_square()) -> #ntc_chess_position{}
-get_new_position(   #ntc_chess_position{
+%% @doc Execute the specified move and return the new chessfold_position tuple
+%% @spec get_new_position(#chessfold_position{}, #chessfold_piece{}, #chessfold_piece{}, false | #chessfold_piece{}, chessfold_castling(), 'false' | chessfold_square()) -> #chessfold_position{}
+get_new_position(   #chessfold_position{
                         pieces                  = Pieces, 
                         turn                    = Turn, 
                         allowedCastling         = AllowedCastling, 
@@ -902,7 +902,7 @@ get_new_position(   #ntc_chess_position{
     % Delete taken piece
     NewPieces1 = case Taken of
                     false -> Pieces;
-                    _     -> lists:keydelete(Taken#ntc_chess_piece.square, ?PIECE_RECORD_SQUARE, Pieces)
+                    _     -> lists:keydelete(Taken#chessfold_piece.square, ?PIECE_RECORD_SQUARE, Pieces)
                  end,
     
     % Move piece
@@ -912,19 +912,19 @@ get_new_position(   #ntc_chess_position{
     NewPieces3 = case Castling of
                     false -> NewPieces2;
                     queen -> 
-                        RookSquare  = From#ntc_chess_piece.square - 4,
-                        RookFrom    = #ntc_chess_piece{color = Turn, type = rook, square = RookSquare},
-                        RookTo      = #ntc_chess_piece{color = Turn, type = rook, square = RookSquare + 3},
+                        RookSquare  = From#chessfold_piece.square - 4,
+                        RookFrom    = #chessfold_piece{color = Turn, type = rook, square = RookSquare},
+                        RookTo      = #chessfold_piece{color = Turn, type = rook, square = RookSquare + 3},
                         move_piece(NewPieces2, RookFrom, RookTo);
                     king  -> 
-                        RookSquare  = From#ntc_chess_piece.square + 3,
-                        RookFrom    = #ntc_chess_piece{color = Turn, type = rook, square = RookSquare},
-                        RookTo      = #ntc_chess_piece{color = Turn, type = rook, square = RookSquare - 2},
+                        RookSquare  = From#chessfold_piece.square + 3,
+                        RookFrom    = #chessfold_piece{color = Turn, type = rook, square = RookSquare},
+                        RookTo      = #chessfold_piece{color = Turn, type = rook, square = RookSquare - 2},
                         move_piece(NewPieces2, RookFrom, RookTo)
                  end,
                    
     % Calculate new castling information
-    EliminatedCastlingOfPlayer    = case {From#ntc_chess_piece.type, From#ntc_chess_piece.color, From#ntc_chess_piece.square} of 
+    EliminatedCastlingOfPlayer    = case {From#chessfold_piece.type, From#chessfold_piece.color, From#chessfold_piece.square} of 
                                         {king, white,                    _} -> ?CASTLING_WHITE_QUEEN bor ?CASTLING_WHITE_KING;
                                         {king,     _,                    _} -> ?CASTLING_BLACK_QUEEN bor ?CASTLING_BLACK_KING;
                                         {rook,     _,  ?BOTTOM_LEFT_CORNER} -> ?CASTLING_WHITE_QUEEN;
@@ -939,13 +939,13 @@ get_new_position(   #ntc_chess_position{
     % Calculate the opponent's new castling information (if a tower is taken)
     EliminatedCastlingOfOpponent  = case Taken of 
                                         false -> 0;
-                                        #ntc_chess_piece{color = VictimColor, type = VictimType} ->
+                                        #chessfold_piece{color = VictimColor, type = VictimType} ->
                                             case VictimType of
                                                 rook -> VictimLeftSquare = case VictimColor of 
                                                             black -> 112; 
                                                             _     -> 0 
                                                         end,
-                                                        case To#ntc_chess_piece.square - VictimLeftSquare of
+                                                        case To#chessfold_piece.square - VictimLeftSquare of
                                                             0 -> case VictimColor of white -> ?CASTLING_WHITE_QUEEN; _ -> ?CASTLING_BLACK_QUEEN end;
                                                             7 -> case VictimColor of white -> ?CASTLING_WHITE_KING;  _ -> ?CASTLING_BLACK_KING  end;
                                                             _ -> 0
@@ -967,12 +967,12 @@ get_new_position(   #ntc_chess_position{
     % Update half-move clock
     NewHalfMoveClock  = if
                             Taken =/= false                     -> 0;
-                            From#ntc_chess_piece.type =:= pawn -> 0;
+                            From#chessfold_piece.type =:= pawn -> 0;
                             true                                -> HalfMoveClock + 1
                         end,
     
     % Return the new position
-    #ntc_chess_position{
+    #chessfold_position{
             pieces                  = NewPieces3, 
             turn                    = NewTurn, 
             allowedCastling         = NewAllowedCastling, 
@@ -983,7 +983,7 @@ get_new_position(   #ntc_chess_position{
     
     move_piece(Pieces, From, To) ->
         % Remove the moved piece from its origin square
-        NewPieces1 = lists:keydelete(From#ntc_chess_piece.square, ?PIECE_RECORD_SQUARE, Pieces),
+        NewPieces1 = lists:keydelete(From#chessfold_piece.square, ?PIECE_RECORD_SQUARE, Pieces),
         % Add the moved piece on target square
         [To|NewPieces1].
         

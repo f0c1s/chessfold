@@ -20,7 +20,7 @@
     
 -include_lib("eunit/include/eunit.hrl").
 
--define(PERFT_DEPTH, 2). % Depth 4 OK
+-define(PERFT_DEPTH, 2). % Depth 5 OK
 -define(PERFT_SUITE, "../test_data/perftsuite.txt").
 -define(DO_NON_EVOLUTIVE_TESTS, false).
 -define(DO_ISOLATION_TESTS, false).
