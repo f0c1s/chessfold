@@ -16,6 +16,7 @@
     string_to_position/1, 
     position_to_string/1, 
     position_to_string_without_counters/1, 
+    move_to_string/1,
     all_possible_moves/1,
     all_possible_moves_from/2,
     position_after_move/1, 
@@ -360,6 +361,12 @@ position_to_string_without_counters(
         square_to_string(SquareNumber).
         
 %% -----------------------------------------------------------------------------
+%% @doc Transform a move tuple into a string. This string can be used by javascript code. 
+%% @spec move_to_string(#chessfold_move{}) -> string()
+move_to_string(Move) ->
+    square_to_string(chessfold:move_origin(Move)) ++ square_to_string(chessfold:move_target(Move)).
+    
+%% -----------------------------------------------------------------------------
 %% @doc Get all possible moves from a specific position
 %% @spec all_possible_moves(#chessfold_position{}) -> list(#chessfold_move{})
 all_possible_moves(Position) when is_record(Position, chessfold_position) ->
@@ -482,8 +489,8 @@ square_to_string(#chessfold_piece{square = SquareNumber}) ->
 square_to_string(SquareNumber) when SquareNumber > ?TOP_RIGHT_CORNER    -> throw({invalid_square_number, SquareNumber}); 
 square_to_string(SquareNumber) when SquareNumber < ?BOTTOM_LEFT_CORNER  -> throw({invalid_square_number, SquareNumber});
 square_to_string(SquareNumber) ->
-    RowValue = SquareNumber div ?ROW_SPAN, 
-    ColValue = SquareNumber rem ?ROW_SPAN, 
+    RowValue = SquareNumber div ?ROW_SPAN, % 0x88 representation
+    ColValue = SquareNumber rem ?ROW_SPAN, % 0x88 representation
     [ColValue + $a, RowValue + $1].
 
 allowed_castling_value_to_string(AllowedCastling) ->
@@ -535,7 +542,7 @@ is_square_in_attack(Pieces, AttackingPieceColor, AttackedSquare) ->
                                     AttackArrayKey        = try AttackedSquare - AttackingSquare + 129 of % Not 128 because ?ATTACK_ARRAY keys start with 1
                                                                 Value -> Value
                                                             catch
-                                                                Error:Reason -> ?NYI({AttackingSquare, AttackedSquare, Error, Reason})
+                                                                Error:Reason -> ?debug("~p: ~p~n", [Error, {Reason, AttackingSquare, AttackedSquare, Error, Reason}])
                                                             end,
                                     PiecesAbleToAttack    = lists:nth(AttackArrayKey, ?ATTACK_ARRAY),
                                     AttackingPieceType    = Piece#chessfold_piece.type,

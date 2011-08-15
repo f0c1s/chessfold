@@ -58,8 +58,9 @@
             taken               = false         :: 'false' | #chessfold_piece{}}). % Not necessarily the same square as 'to' (en passant)
             
 % Source: Programming Erlang, p 424
--define(NYI(X), (begin
-                    io:format("*** NYI ~p ~p ~p~n", [?MODULE, ?LINE, X])
+-define(debug(X, Y), (begin
+                    Info = io_lib:format(X, Y),
+                    io:format("~nDebug in module ~p, line ~p:~n~p~n", [?MODULE, ?LINE, Info])
                  end)).
                  
 
