@@ -51,12 +51,3 @@ How to run unit tests
     $ make fortest
     $ make testall
 
-Coding conventions
-------------------
-
-Documentation
--------------
-
-Start by reading doc/overview.odt. 
-
-
