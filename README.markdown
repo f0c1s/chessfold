@@ -18,19 +18,19 @@ Credits
 -------
 
 For the algorithm:
-* http://stackoverflow.com/questions/494721/what-are-some-good-resources-for-writing-a-chess-engine
-* Jonatan Pettersson's blog: 
-** http://mediocrechess.blogspot.com/
-** http://mediocrechess.blogspot.com/2006/12/guide-move-generation.html
-** http://mediocrechess.blogspot.com/2006/12/0x88-representation.html
-** http://mediocrechess.blogspot.com/2006/12/guide-attacked-squares.html
+ * http://stackoverflow.com/questions/494721/what-are-some-good-resources-for-writing-a-chess-engine
+ * Jonatan Pettersson's blog: 
+  * http://mediocrechess.blogspot.com/
+  * http://mediocrechess.blogspot.com/2006/12/guide-move-generation.html
+  * http://mediocrechess.blogspot.com/2006/12/0x88-representation.html
+  * http://mediocrechess.blogspot.com/2006/12/guide-attacked-squares.html
 
 For debugging and tests: 
-* Roce: http://www.rocechess.ch/rocee.html
-* Perft suite: http://hem.passagen.se/maragor/perftsuite.epd, which can be found inside Roce
-* http://mediocrechess.blogspot.com/2007/01/guide-perft-scores.html
-* http://www.albert.nu/programs/sharper/perft.asp
-* https://chessprogramming.wikispaces.com/Perft+Results
+ * Roce: http://www.rocechess.ch/rocee.html
+ * Perft suite: http://hem.passagen.se/maragor/perftsuite.epd, which can be found inside Roce
+ * http://mediocrechess.blogspot.com/2007/01/guide-perft-scores.html
+ * http://www.albert.nu/programs/sharper/perft.asp
+ * https://chessprogramming.wikispaces.com/Perft+Results
   
 License
 -------
